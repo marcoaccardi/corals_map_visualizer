@@ -1,13 +1,36 @@
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="src/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Create-Cesium 🌏</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="src/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Create-Cesium 🌏</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/cesium@1.83.0/Build/Cesium/Cesium.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/cesium@1.83.0/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+  <script src="https://www.lactame.com/lib/netcdfjs/0.7.0/netcdfjs.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/dat.gui@0.7.6/build/dat.gui.min.js"></script>
+  <script src="https://spectorcdn.babylonjs.com/spector.bundle.js"></script>
+
+  <style>
+    .myPanel {
+      position: absolute;
+      top: 5px;
+      left: 5px;
+    }
+  </style>
+
+</head>
+
+<body>
+  <div id="cesiumContainer" class="cesium-widget">
+  </div>
+
+  <script>
+    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiI0MDU5Y2E1ZC1hMGY1LTQ2NmQtOWQzZi1lYjgwOWU2NDNhMTMiLCJpZCI6MTM0NTMwLCJpYXQiOjE2ODE5MjExMTh9.wTIf-Rg1aTmYgKXemZz-QWDr03axwMpjIzAE9S080QA';
+  </script>
+  <script type="module" src="/src/main.jsx"></script>
+</body>
+
 </html>
