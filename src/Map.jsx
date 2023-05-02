@@ -7,7 +7,7 @@ import React, {
 } from "react";
 import { Viewer, Entity, ImageryLayer, CameraFlyTo } from "resium";
 import "cesium/Source/Widgets/widgets.css";
-import { SingleTileImageryProvider, Rectangle, Cartesian3 } from "cesium";
+import { SingleTileImageryProvider, Rectangle, Cartesian3, PointGraphics, Color } from "cesium";
 import io from "socket.io-client";
 
 const Map = forwardRef((props, ref) => {
@@ -116,6 +116,10 @@ const Map = forwardRef((props, ref) => {
         />
         <CameraFlyTo duration={5} destination={flyToLocation} />
       </Entity>
+
+      {/* <Entity position={Cartesian3.fromDegrees(coordinates.lon, coordinates.lat)}>
+        <PointGraphics pixelSize={1} color={Color.RED}/>
+      </Entity> */}
     </Viewer>
   );
 });

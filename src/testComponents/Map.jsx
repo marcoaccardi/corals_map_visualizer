@@ -138,7 +138,7 @@ const Map = forwardRef((props, ref) => {
     <Viewer
       ref={ref}
       full
-      creditContainer={dummyCredit}
+      creditContainer={null}
       animation={false}
       baseLayerPicker={false}
       fullscreenButton={false}
