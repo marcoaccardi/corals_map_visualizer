@@ -10,8 +10,7 @@ import {
   Entity,
   ImageryLayer,
   CameraFlyTo,
-  // PointGraphics,
-  // Color,
+  PointGraphics,
 } from "resium";
 import "cesium/Source/Widgets/widgets.css";
 import { SingleTileImageryProvider, Rectangle, Cartesian3 } from "cesium";
@@ -25,6 +24,10 @@ const Map = forwardRef((props, ref) => {
       coordinates.lat,
       coordinates.height
     );
+  }, [coordinates]);
+
+  const position = useMemo(() => {
+    return Cartesian3.fromDegrees(coordinates.lon, coordinates.lat);
   }, [coordinates]);
 
   const rectangle = useMemo(() => {
@@ -123,10 +126,9 @@ const Map = forwardRef((props, ref) => {
         />
         <CameraFlyTo duration={5} destination={flyToLocation} />
       </Entity>
-
-      {/* <Entity position={Cartesian3.fromDegrees(coordinates.lon, coordinates.lat)}>
-        <PointGraphics pixelSize={1} color={Color.RED}/>
-      </Entity> */}
+      <Entity position={position}>
+        <PointGraphics pixelSize={10} color={Cesium.Color.RED} />
+      </Entity>
     </Viewer>
   );
 });
