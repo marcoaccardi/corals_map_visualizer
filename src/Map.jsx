@@ -5,9 +5,16 @@ import React, {
   useEffect,
   useCallback,
 } from "react";
-import { Viewer, Entity, ImageryLayer, CameraFlyTo } from "resium";
+import {
+  Viewer,
+  Entity,
+  ImageryLayer,
+  CameraFlyTo,
+  // PointGraphics,
+  // Color,
+} from "resium";
 import "cesium/Source/Widgets/widgets.css";
-import { SingleTileImageryProvider, Rectangle, Cartesian3, PointGraphics, Color } from "cesium";
+import { SingleTileImageryProvider, Rectangle, Cartesian3 } from "cesium";
 import io from "socket.io-client";
 
 const Map = forwardRef((props, ref) => {
