@@ -27,6 +27,7 @@ const Map = forwardRef((props, ref) => {
   }, [coordinates]);
 
   const position = useMemo(() => {
+    console.log(coordinates);
     return Cartesian3.fromDegrees(coordinates.lon, coordinates.lat);
   }, [coordinates]);
 
@@ -127,7 +128,12 @@ const Map = forwardRef((props, ref) => {
         <CameraFlyTo duration={5} destination={flyToLocation} />
       </Entity>
       <Entity position={position}>
-        <PointGraphics pixelSize={10} color={Cesium.Color.RED} />
+        <PointGraphics
+          pixelSize={15}
+          color={Cesium.Color.TRANSPARENT}
+          outlineWidth={2}
+          outlineColor={Cesium.Color.BLACK}
+        />
       </Entity>
     </Viewer>
   );
