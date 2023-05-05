@@ -90,7 +90,10 @@ const Map = forwardRef((props, ref) => {
   //     // socket.disconnect();
   //   };
   // }, [updateImageryProvider]);
-
+  // const flyToLocationOut = useMemo(() => {
+  //   console.log("memo out");
+  //   return Cartesian3.fromDegrees(coordinates.lon, coordinates.lat, 900000);
+  // }, [coordinates]);
   useEffect(() => {
     socket.on("texture_baa", (data) => {
       if (data) {
@@ -110,6 +113,19 @@ const Map = forwardRef((props, ref) => {
   socket.on("disconnect", () => {
     console.log("Disconnected from server");
   });
+  // let flyToLocationOut;
+  // useEffect(() => {
+  //   return () => {
+  //     flyToLocationOut = () => {
+  //       console.log("MAP", coordinates);
+  //       return Cartesian3.fromDegrees(
+  //         coordinates.lon,
+  //         coordinates.lat,
+  //         9000000
+  //       );
+  //     };
+  //   };
+  // }, []);
 
   return (
     <Viewer
@@ -144,6 +160,7 @@ const Map = forwardRef((props, ref) => {
         />
       </Entity>
       <CameraFlyTo duration={5} destination={flyToLocation} />
+      {/* <CameraFlyTo duration={5} destination={flyToLocationOut} /> */}
     </Viewer>
   );
 });
