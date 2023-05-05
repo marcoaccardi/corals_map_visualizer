@@ -14,11 +14,11 @@ function App() {
     height: 5000000,
   });
   const [prevCoordinates, setPrevCoordinates] = useState(null);
-
+  let coords;
   useEffect(() => {
     socket.on("coords", (data) => {
       // console.log(data);
-      let coords = {
+      coords = {
         lat: data[1],
         lon: data[0],
         height: 9000000,
@@ -35,9 +35,10 @@ function App() {
           ),
           Cartesian3.fromDegrees(coords.lon, coords.lat, coords.height)
         );
+        console.log(distance, "PREV COOORDS");
 
         if (distance > 10000) {
-          // zoom out if the distance is greater than 1000000 meters
+          console.log(distance, "> 10000");
           viewerRef.current.camera?.flyTo({
             destination: Cartesian3.fromDegrees(
               coords.lon,
@@ -47,7 +48,7 @@ function App() {
             duration: 3,
           });
         } else {
-          // zoom in if the distance is less than or equal to 1000000 meters
+          console.log(distance, "< 10000");
           viewerRef.current.camera?.flyTo({
             destination: Cartesian3.fromDegrees(
               coords.lon,
@@ -58,7 +59,7 @@ function App() {
           });
         }
       }
-
+      console.log(coords);
       setPrevCoordinates(coords);
       setCoordinates(coords);
     });
@@ -74,10 +75,10 @@ function App() {
   socket.on("disconnect", () => {
     console.log("Disconnected from server");
   });
+  console.log("render", coordinates);
   return (
     <div>
       <Map ref={viewerRef} coordinates={coordinates} />
-     
     </div>
   );
 }

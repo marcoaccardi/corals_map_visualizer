@@ -15,10 +15,11 @@ import {
 import "cesium/Source/Widgets/widgets.css";
 import { SingleTileImageryProvider, Rectangle, Cartesian3 } from "cesium";
 import io from "socket.io-client";
-
+import terrain from "./assets/terrain.jpeg";
 const Map = forwardRef((props, ref) => {
   const { coordinates } = props;
   const flyToLocation = useMemo(() => {
+    console.log("MAP", coordinates);
     return Cartesian3.fromDegrees(
       coordinates.lon,
       coordinates.lat,
@@ -27,12 +28,18 @@ const Map = forwardRef((props, ref) => {
   }, [coordinates]);
 
   const position = useMemo(() => {
-    console.log(coordinates);
     return Cartesian3.fromDegrees(coordinates.lon, coordinates.lat);
   }, [coordinates]);
 
   const rectangle = useMemo(() => {
     return Rectangle.fromDegrees(-180, -90, 180, 90);
+  }, []);
+
+  const blackTexture = useMemo(() => {
+    return new SingleTileImageryProvider({
+      url: terrain || undefined,
+      rectangle: rectangle,
+    });
   }, []);
 
   const [blobUrl, setBlobUrl] = useState(
@@ -68,21 +75,21 @@ const Map = forwardRef((props, ref) => {
   const dummyCredit = useMemo(() => document.createElement("div"), []);
 
   const socket = io("http://localhost:4000");
-  useEffect(() => {
-    socket.on("texture_sst", (data) => {
-      if (data) {
-        const blob = new Blob([data.buffer], { type: "image/png" });
-        const url = URL.createObjectURL(blob);
-        updateImageryProvider(url);
-      }
-    });
+  // useEffect(() => {
+  //   socket.on("texture_sst", (data) => {
+  //     if (data) {
+  //       const blob = new Blob([data.buffer], { type: "image/png" });
+  //       const url = URL.createObjectURL(blob);
+  //       updateImageryProvider(url);
+  //     }
+  //   });
 
-    return () => {
-      socket.off("texture_sst");
+  //   return () => {
+  //     socket.off("texture_sst");
 
-      socket.disconnect();
-    };
-  }, [updateImageryProvider]);
+  //     // socket.disconnect();
+  //   };
+  // }, [updateImageryProvider]);
 
   useEffect(() => {
     socket.on("texture_baa", (data) => {
@@ -90,12 +97,13 @@ const Map = forwardRef((props, ref) => {
         const blob = new Blob([data.buffer], { type: "image/png" });
         const url = URL.createObjectURL(blob);
         updateImageryProvider(url);
+        console.log("TEXTURE BAA");
       }
     });
 
     return () => {
       socket.off("texture_baa");
-      socket.disconnect();
+      // socket.disconnect();
     };
   }, [updateImageryProvider]);
 
@@ -118,14 +126,14 @@ const Map = forwardRef((props, ref) => {
       selectionIndicator={false}
       timeline={false}
       navigationHelpButton={false}
+      imageryProvider={blackTexture}
     >
       <Entity name="My image layer" description="This is my texture layer">
         <ImageryLayer
-          alpha={0.5}
+          alpha={1}
           imageryProvider={imageryProvider}
           key={imageryProvider.url}
         />
-        <CameraFlyTo duration={5} destination={flyToLocation} />
       </Entity>
       <Entity position={position}>
         <PointGraphics
@@ -135,6 +143,7 @@ const Map = forwardRef((props, ref) => {
           outlineColor={Cesium.Color.BLACK}
         />
       </Entity>
+      <CameraFlyTo duration={5} destination={flyToLocation} />
     </Viewer>
   );
 });
