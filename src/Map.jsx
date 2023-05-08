@@ -17,7 +17,13 @@ import { SingleTileImageryProvider, Rectangle, Cartesian3 } from "cesium";
 import io from "socket.io-client";
 import terrain from "./assets/terrain.jpeg";
 const Map = forwardRef((props, ref) => {
-  const { coordinates } = props;
+  const socket = useMemo(() => io("http://localhost:4000"), []);
+
+  const [coordinates, setCoordinates] = useState({
+    lat: 40.59777,
+    lon: -30.03883,
+    height: 5000000,
+  });
   const flyToLocation = useMemo(() => {
     console.log("MAP", coordinates);
     return Cartesian3.fromDegrees(
@@ -61,6 +67,11 @@ const Map = forwardRef((props, ref) => {
         rectangle: rectangle,
         credit: "NOAA",
       });
+
+      newImageryProvider.readyPromise.then(() => {
+        console.log("Texture loaded");
+      });
+
       setImageryProvider((prevProvider) => {
         if (prevProvider.url !== newBlobUrl) {
           return newImageryProvider;
@@ -74,7 +85,6 @@ const Map = forwardRef((props, ref) => {
 
   const dummyCredit = useMemo(() => document.createElement("div"), []);
 
-  const socket = io("http://localhost:4000");
   // useEffect(() => {
   //   socket.on("texture_sst", (data) => {
   //     if (data) {
@@ -95,37 +105,37 @@ const Map = forwardRef((props, ref) => {
   //   return Cartesian3.fromDegrees(coordinates.lon, coordinates.lat, 900000);
   // }, [coordinates]);
   useEffect(() => {
+    let textureLoaded = false;
     socket.on("texture_baa", (data) => {
       if (data) {
         const blob = new Blob([data.buffer], { type: "image/png" });
         const url = URL.createObjectURL(blob);
         updateImageryProvider(url);
-        console.log("TEXTURE BAA");
+        console.log("TEXTURE BAA", data);
       }
+    });
+
+    socket.on("coords", (data) => {
+      const coords = {
+        lat: data[1],
+        lon: data[0],
+        height: 8000000,
+      };
+
+      setCoordinates(coords);
+      console.log(data);
     });
 
     return () => {
       socket.off("texture_baa");
-      // socket.disconnect();
+      socket.off("coords");
+      socket.disconnect();
     };
   }, [updateImageryProvider]);
 
   socket.on("disconnect", () => {
     console.log("Disconnected from server");
   });
-  // let flyToLocationOut;
-  // useEffect(() => {
-  //   return () => {
-  //     flyToLocationOut = () => {
-  //       console.log("MAP", coordinates);
-  //       return Cartesian3.fromDegrees(
-  //         coordinates.lon,
-  //         coordinates.lat,
-  //         9000000
-  //       );
-  //     };
-  //   };
-  // }, []);
 
   return (
     <Viewer
