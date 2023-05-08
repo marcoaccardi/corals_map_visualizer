@@ -22,7 +22,7 @@ const Map = forwardRef((props, ref) => {
   const [coordinates, setCoordinates] = useState({
     lat: 40.59777,
     lon: -30.03883,
-    height: 5000000,
+    height: 9000000,
   });
   const flyToLocation = useMemo(() => {
     console.log("MAP", coordinates);
@@ -105,7 +105,6 @@ const Map = forwardRef((props, ref) => {
   //   return Cartesian3.fromDegrees(coordinates.lon, coordinates.lat, 900000);
   // }, [coordinates]);
   useEffect(() => {
-    let textureLoaded = false;
     socket.on("texture_baa", (data) => {
       if (data) {
         const blob = new Blob([data.buffer], { type: "image/png" });
@@ -119,9 +118,9 @@ const Map = forwardRef((props, ref) => {
       const coords = {
         lat: data[1],
         lon: data[0],
-        height: 8000000,
+        height: 9000000,
       };
-
+      setShouldRenderSecond(false);
       setCoordinates(coords);
       console.log(data);
     });
@@ -136,7 +135,15 @@ const Map = forwardRef((props, ref) => {
   socket.on("disconnect", () => {
     console.log("Disconnected from server");
   });
-
+  const [shouldRenderSecond, setShouldRenderSecond] = useState(false);
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setShouldRenderSecond(true);
+    }, 3000);
+    return () => {
+      clearTimeout(timeout);
+    };
+  }, [coordinates]);
   return (
     <Viewer
       ref={ref}
@@ -170,6 +177,16 @@ const Map = forwardRef((props, ref) => {
         />
       </Entity>
       <CameraFlyTo duration={5} destination={flyToLocation} />
+      {shouldRenderSecond && (
+        <CameraFlyTo
+          duration={3}
+          destination={Cartesian3.fromDegrees(
+            coordinates.lon,
+            coordinates.lat,
+            3000000
+          )}
+        />
+      )}
       {/* <CameraFlyTo duration={5} destination={flyToLocationOut} /> */}
     </Viewer>
   );
