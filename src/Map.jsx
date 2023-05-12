@@ -118,7 +118,7 @@ const Map = forwardRef((props, ref) => {
       const coords = {
         lat: data[1],
         lon: data[0],
-        height: 9000000,
+        height: 20000000,
       };
       setShouldRenderSecond(false);
       setCoordinates(coords);
@@ -139,7 +139,7 @@ const Map = forwardRef((props, ref) => {
   useEffect(() => {
     const timeout = setTimeout(() => {
       setShouldRenderSecond(true);
-    }, 3000);
+    }, 4500);
     return () => {
       clearTimeout(timeout);
     };
@@ -183,7 +183,7 @@ const Map = forwardRef((props, ref) => {
           destination={Cartesian3.fromDegrees(
             coordinates.lon,
             coordinates.lat,
-            3000000
+            4000000
           )}
         />
       )}
